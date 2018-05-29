@@ -61,34 +61,51 @@ int sendIR(String data) {
     int args[3];
     const char* buf = data.c_str();
     char* arg = strtok(strdup(buf), ",");
-    for (int i = 0; i < 3; i++) {
-        args[i] = atoi(arg);
+    if (atoi(arg) == RAW) {
+        // Parse input string
         arg = strtok(NULL, ",");
+        const char* raw_str = arg;
+        arg = strtok(NULL, ",");
+        
+        // Convert raw data to array
+        unsigned int raw_data[atoi(arg)];
+        char* raw_element = strtok(strdup(raw_str), " ");
+        for (int i = 0; i < atoi(arg); i++) {
+            raw_data[i] = atoi(raw_element);
+            raw_element = strtok(NULL, " ");
+        }
+        
+        // Send raw
+        ir_send.sendRaw(raw_data, atoi(arg), 38);
+        
     }
-    switch (args[0]) {
-        case NEC:
-            ir_send.sendNEC(args[1], args[2]);
-            break;
-        case SONY:
-            ir_send.sendSony(args[1], args[2]);
-            break;
-        case RC5:
-            ir_send.sendRC5(args[1], args[2]);
-            break;
-        case RC6:
-            ir_send.sendRC6(args[1], args[2]);
-            break;
-        case SHARP:
-            ir_send.sendSharp(args[1], args[2]);
-            break;
-        case PANASONIC:
-            ir_send.sendPanasonic(args[1], args[2]);
-            break;
-        case JVC:
-            ir_send.sendJVC(args[1], args[2], 0);
-            break;
-        case RAW:
-            ir_send.sendSony(args[1], args[2], 38);
-            break;
-    }   
+    else {
+        for (int i = 0; i < 3; i++) {
+            args[i] = atoi(arg);
+            arg = strtok(NULL, ",");
+        }
+        switch (args[0]) {
+            case NEC:
+                ir_send.sendNEC(args[1], args[2]);
+                break;
+            case SONY:
+                ir_send.sendSony(args[1], args[2]);
+                break;
+            case RC5:
+                ir_send.sendRC5(args[1], args[2]);
+                break;
+            case RC6:
+                ir_send.sendRC6(args[1], args[2]);
+                break;
+            case SHARP:
+                ir_send.sendSharp(args[1], args[2]);
+                break;
+            case PANASONIC:
+                ir_send.sendPanasonic(args[1], args[2]);
+                break;
+            case JVC:
+                ir_send.sendJVC(args[1], args[2], 0);
+                break;
+        }
+    } 
 }
